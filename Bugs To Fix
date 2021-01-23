@@ -1,0 +1,6 @@
+Bugs To Fix
+
+- createTribe won't make a new role if it has # in the role name
+- React to bot message, not message beforehand - 15/11/20
+  -> channel.sendMessage(n + " created! React to this message to join the tribe.").queue(message -> message.addReaction("U+1F4A9").queue())
+- Learn how the bot can handle reactions and adding/removing roles

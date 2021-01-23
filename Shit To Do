@@ -1,0 +1,13 @@
+Shit To Do
+- Automatically add author to the created role - Done 13/11/20
+- Bot automatically reacts to role - Done 13/11/20
+- Users who react to the role will be added to role - check this
+- Users who unreact to the role will be removed from the role
+- Add check if role already exists - Done 15/11/20
+- Figure out how to read from config files
+- Make it so the bot only works in one channel - so two ways to handle. check for perms, or set up bot using commands
+- Mute, temp mute, ban, kick commands
+- unban, unmute commands
+- Warn user, should be PMed by the bot
+- Figure out how to start a user profile? keeps track of infractions
+- clear messages from channel, maybe from a given date to a given date
