@@ -6,21 +6,30 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class MessageListener extends ListenerAdapter {
 
     private Roles roles = new Roles();
-    Moderation moderation = new Moderation();
+    private Moderation moderation = new Moderation();
 
     public void onMessageReceived(MessageReceivedEvent event) {
         try {
             Guild guild = event.getGuild();
-            long user = event.getAuthor().getIdLong();
+            long author  = event.getAuthor().getIdLong();
             MessageChannel channel = event.getChannel();
-            String command = event.getMessage().getContentRaw();
+            String rawMsg = event.getMessage().getContentRaw();
+            String [] arr = rawMsg.split(" ", 2);
             boolean isBot = event.getAuthor().isBot();
 
-            switch(command){
-                case "!newtribe": roles.createTribe(channel, guild, command, user);
-                break;
+            if(!isBot){
+                switch(arr[0]){
+                    case "!newtribe":
+                        roles.createTribe(channel, guild, rawMsg, author);
+                        break;
+                    case "!mute":
+                        moderation.muteUser(guild, arr[1], channel);
+                        break;
 
-                default: channel.sendMessage("ugh").queue(); break;
+                    default:
+                        System.out.println("blah");
+                        break;
+                }
             }
 
 
@@ -29,7 +38,6 @@ public class MessageListener extends ListenerAdapter {
             System.out.println("Insufficient permissions.");
         }
     }
-
-        }
+}
 
 

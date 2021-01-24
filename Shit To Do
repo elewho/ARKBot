@@ -11,3 +11,7 @@ Shit To Do
 - Warn user, should be PMed by the bot
 - Figure out how to start a user profile? keeps track of infractions
 - clear messages from channel, maybe from a given date to a given date
+- segregate commands using prefixes (? or ! or .), eg. mods use ! and users use . and ?
+- learn hashmaps or lists to make a command system
+- Add authorisation - if users have perms to use this command
+- getArgs? what that
