@@ -1,3 +1,6 @@
+package gruntwork;
+
+
 import net.dv8tion.jda.api.entities.*;
 
 public class Moderation {
@@ -7,24 +10,17 @@ public class Moderation {
         guild.addRoleToMember(badUser, mutedRole).queue();
     }
 
+    /**
+     * Kicks person out of guild.
+     *
+     * @param guild what guild the action should be taken in
+     * @param rawMsg takes first element in String array as user's name
+     */
     public void kickUser(Guild guild, String [] rawMsg){
         guild.kick(rawMsg[1]).queue();
     }
 
 
 
-        /*
-        create role "MUTED"
-        assign role to person you wanna mute
-        delete messages from that user for the past hour
-         */
 
-
-
-
-    /*
-    mute, temp mute, kick, ban, temp ban
-    then the opposite of those
-
-     */
 }

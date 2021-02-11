@@ -1,13 +1,17 @@
+package listeners;
+
+import gruntwork.*;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.Arrays;
 import java.util.*;
-
-import static net.dv8tion.jda.api.entities.Role.DEFAULT_COLOR_RAW;
+import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
@@ -23,11 +27,15 @@ public class MessageListener extends ListenerAdapter {
             String rawMsg = event.getMessage().getContentRaw();
             String[] rawMsgArray = event.getMessage().getContentRaw().split(" ");
             boolean isBot = event.getAuthor().isBot();
-            String color = "", roleName = "";
+            String roleName = "";
 
-            if(!isBot){
+            if(!isBot){ //Can probably be changed to detect first char
                 switch(rawMsgArray[0]){
                     case "!newtribe":
+
+                        boolean colorSpecified;
+                        String color = "";
+                        Role role = null;
 
                         if(rawMsgArray.length > 4){
                             channel.sendMessage("The given tribe is either too long or contains a #. Please try again").queue();
@@ -38,30 +46,32 @@ public class MessageListener extends ListenerAdapter {
                             int i = rawMsg.indexOf("#");
                             color += rawMsg.substring(i);
                             roleName += rawMsg.substring(10, i);
+                            colorSpecified = true;
                         } else{
-                            color += "#99AAB5"; //Default color code
+                            colorSpecified = false;
                             roleName += rawMsg.substring(10);
                         }
 
-                        if(guild.getRolesByName(roleName, true).isEmpty()){
-                            Role role = roles.createTribe(channel, guild, color, roleName, userID);
-                            if (role != null){
-                                channel.sendMessage("Role created! Click the :white_check_mark: to enter.").queue((message -> message.addReaction("U+2705").queue()));
+                        if(guild.getRolesByName(roleName, true).isEmpty()) {
+                            if (colorSpecified) {
+                                role = roles.createTribe(channel, guild, color, roleName, userID);
+                            } else {
+                                role = roles.createTribe(channel, guild, roleName, userID);
                             }
-                        } else{
-                            channel.sendMessage("This role name is already in use. Please try again").queue();
                         }
 
+                        if (role != null) {
+                            channel.sendMessage(role.getAsMention() + " created! Click the :white_check_mark: to enter.").queue((message -> message.addReaction("U+2705").queue()));
+                        } else {
+                            channel.sendMessage("This role name is already in use. Please try again.").queue();
+                        }
 
                         break;
 
                     case "!mute":
                         Role mutedRole = null;
-
                         //Checks if MUTED Role exists.
                         if(guild.getRolesByName("MUTED", false).isEmpty()){
-                            color += "#99AAB5";
-                            roleName = "MUTED";
                             mutedRole = roles.createMuted(channel, guild);
                         }else{
                             List<Role> roles = guild.getRolesByName("MUTED", false);
@@ -70,12 +80,6 @@ public class MessageListener extends ListenerAdapter {
                                     mutedRole = r;
                                     break;
                                 }
-                        }
-                        //This checks if user is already muted.
-                        if(member.getRoles().stream().filter(role -> role.getName().equals("MUTED"))
-                        .findFirst().orElse(null) != null){
-                            channel.sendMessage("User is already muted.").queue();
-                            break;
                         }
 
                         // This checks if user has modPerms and if mutedRole exists.
@@ -105,22 +109,44 @@ public class MessageListener extends ListenerAdapter {
                             }
 
                         }
-
                         break;
 
 
                     default:
-                        channel.sendMessage("ugh").queue();
                         break;
                 }
             }
 
 
-
-
         } catch (InsufficientPermissionException ipe){
             System.out.println("Insufficient permissions.");
         }
+    }
+
+    public void onGuildJoin (GuildJoinEvent event){
+        System.out.println("reached 1");
+        Guild guild = event.getGuild();
+
+        List<Role> roles = guild.getRolesByName("VERIFIED", false);
+        Role verifiedRole = null;
+        for(Role r : roles){
+            if(r.getName().equals("VERIFIED")){
+                verifiedRole = r;
+                break;
+            }
+        }
+        /*
+        if(verifiedRole!= null){
+            guild.addRoleToMember(userID, verifiedRole).queueAfter(5, TimeUnit.SECONDS);
+        } else{
+            System.out.println("reached 2");
+        }
+        */
+
+        /*
+        when member joins, wait 3 seconds and verify
+        verify means assign role, so they can see all the other channels
+         */
     }
 
     private boolean hasModPerms(Member member){
@@ -130,11 +156,7 @@ public class MessageListener extends ListenerAdapter {
                 .findFirst()
                 .orElse(null);
 
-       if(member.getRoles().contains(modRole)){
-           return true;
-       } else{
-           return false;
-       }
+        return member.getRoles().contains(modRole);
 
     }
 
