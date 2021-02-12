@@ -123,24 +123,7 @@ public class MessageListener extends ListenerAdapter {
         }
     }
 
-    public void onGuildMemberJoin (GuildMemberJoinEvent event){
-        System.out.println("reached 1");
-        Guild guild = event.getGuild();
-        long userID = event.getMember().getIdLong();
 
-        List<Role> roles = guild.getRolesByName("VERIFIED", false);
-        Role verifiedRole = null;
-        for(Role r : roles){
-            if(r.getName().equals("VERIFIED")){
-                verifiedRole = r;
-                break;
-            }
-        }
-
-        if(verifiedRole!= null){
-            guild.addRoleToMember(userID, verifiedRole).queueAfter(5, TimeUnit.SECONDS);
-        }
-    }
 
     private boolean hasModPerms(Member member){
         List<Role> memRoles = member.getRoles();
