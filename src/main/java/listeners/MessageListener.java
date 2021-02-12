@@ -123,9 +123,10 @@ public class MessageListener extends ListenerAdapter {
         }
     }
 
-    public void onGuildJoin (GuildJoinEvent event){
+    public void onGuildMemberJoin (GuildMemberJoinEvent event){
         System.out.println("reached 1");
         Guild guild = event.getGuild();
+        long userID = event.getMember().getIdLong();
 
         List<Role> roles = guild.getRolesByName("VERIFIED", false);
         Role verifiedRole = null;
@@ -135,18 +136,10 @@ public class MessageListener extends ListenerAdapter {
                 break;
             }
         }
-        /*
+
         if(verifiedRole!= null){
             guild.addRoleToMember(userID, verifiedRole).queueAfter(5, TimeUnit.SECONDS);
-        } else{
-            System.out.println("reached 2");
         }
-        */
-
-        /*
-        when member joins, wait 3 seconds and verify
-        verify means assign role, so they can see all the other channels
-         */
     }
 
     private boolean hasModPerms(Member member){

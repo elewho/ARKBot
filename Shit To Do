@@ -6,7 +6,7 @@ Roles-
 - Users who react to the role will be added to role - done 11/02/21
 - Users who unreact to the role will be removed from the role - done 11/02/21
 - Add check if role already exists - rehauled 03/02/21
-- when user joins, wait 3 seconds before assigning VERIFIED role
+- when user joins, wait 3 seconds before assigning VERIFIED role - done 12/02/21
 
 Moderation
 - Make it so the bot only works in one channel - so two ways to handle. check for perms, or set up bot using commands
