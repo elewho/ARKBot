@@ -5,9 +5,14 @@ import net.dv8tion.jda.api.entities.*;
 
 public class Moderation {
 
-    public void muteUser(Guild guild, String [] rawMsg, Role mutedRole) {
-        String warningMsg = "", badUser = rawMsg[1];
-        guild.addRoleToMember(badUser, mutedRole).queue();
+    public void muteUser(Guild guild, Message message, Role mutedRole) {
+        User badUser = message.getMentionedUsers().get(0);
+        /*
+        check if user is already muted
+
+         */
+
+        guild.addRoleToMember();
     }
 
     /**

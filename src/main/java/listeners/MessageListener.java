@@ -4,14 +4,11 @@ import gruntwork.*;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
@@ -24,10 +21,22 @@ public class MessageListener extends ListenerAdapter {
             Member member = event.getMember();
             long userID = event.getAuthor().getIdLong();
             MessageChannel channel = event.getChannel();
+            Message message = event.getMessage();
             String rawMsg = event.getMessage().getContentRaw();
             String[] rawMsgArray = event.getMessage().getContentRaw().split(" ");
             boolean isBot = event.getAuthor().isBot();
             String roleName = "";
+
+            /*
+            // Prefix Mapping
+            HashMap<Long, Character> moderationCommands = new HashMap<Long, Character>();
+            moderationCommands.put(event.getGuild().getIdLong(), event.getMessage().getContentRaw().charAt(0));
+
+            // Command Mapping
+            HashMap<String, Roles> roleCommands = new HashMap<String, Roles>();
+            HashMap<String, Moderation> modCommands = new HashMap<String, Moderation>();
+            */
+
 
             if(!isBot){ //Can probably be changed to detect first char
                 switch(rawMsgArray[0]){
@@ -84,7 +93,7 @@ public class MessageListener extends ListenerAdapter {
 
                         // This checks if user has modPerms and if mutedRole exists.
                         if(hasModPerms(member) && mutedRole != null){
-                            mod.muteUser(guild, rawMsgArray, mutedRole);
+                            mod.muteUser(guild, message, mutedRole);
                             channel.sendMessage("User " + rawMsgArray[1] + " has been muted.").queue();
                         } else
                             channel.sendMessage("You do not have the permissions for this command.").queue();
@@ -94,8 +103,7 @@ public class MessageListener extends ListenerAdapter {
                         if(hasModPerms(member)){
                             mod.kickUser(guild, rawMsgArray);
                             channel.sendMessage("User " + rawMsgArray[1] + " has been kicked.").queue();
-                            Member badUser = guild.getMemberById(rawMsgArray[1]);
-                            System.out.println(rawMsgArray[1]);
+
 
                             JDA jda = event.getJDA();
                             User user = jda.retrieveUserById(rawMsgArray[1]).complete();
