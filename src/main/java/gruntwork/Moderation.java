@@ -5,24 +5,28 @@ import net.dv8tion.jda.api.entities.*;
 
 public class Moderation {
 
-    public void muteUser(Guild guild, Message message, Role mutedRole) {
-        User badUser = message.getMentionedUsers().get(0);
-        /*
-        check if user is already muted
+    /**
+     *
+     * @param guild what guild the action should be taken in
+     * @param badUser user to be muted
+     * @param mutedRole role MUTED
+     */
+    public void muteUser(Guild guild, User badUser, Role mutedRole) {
+        guild.addRoleToMember(badUser.getId(), mutedRole);
+    }
 
-         */
+    public void msgUser(){
 
-        guild.addRoleToMember();
     }
 
     /**
      * Kicks person out of guild.
      *
      * @param guild what guild the action should be taken in
-     * @param rawMsg takes first element in String array as user's name
+     * @param user Object user to be kicked
      */
-    public void kickUser(Guild guild, String [] rawMsg){
-        guild.kick(rawMsg[1]).queue();
+    public void kickUser(Guild guild, User user){
+        guild.kick(user.getId()).queue();
     }
 
 

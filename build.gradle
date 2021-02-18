@@ -6,7 +6,7 @@ plugins {
 mainClassName = 'ARKBot'
 
 version '1.0'
-def jdaVersion = '4.2.0_227'
+def jdaVersion = '4.2.0_228'
 
 sourceCompatibility = targetCompatibility = 1.8
 

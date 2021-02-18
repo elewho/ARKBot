@@ -13,7 +13,7 @@ Moderation
 - Mute - done 03/02/20, needs check, needs to add duration and warning
 - temp mute, ban, kick commands
 - unban, unmute commands
-- Warn user, should be PMed by the bot
+- Warn user, should be PMed by the bot - done 18/02/21
 - clear messages from channel, maybe from a given date to a given date
 
 

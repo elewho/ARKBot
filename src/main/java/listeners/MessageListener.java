@@ -5,6 +5,8 @@ import gruntwork.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -15,16 +17,16 @@ public class MessageListener extends ListenerAdapter {
     private Roles roles = new Roles();
     private Moderation mod = new Moderation();
 
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         try {
             Guild guild = event.getGuild();
             Member member = event.getMember();
-            long userID = event.getAuthor().getIdLong();
+            long userID = member.getIdLong();
             MessageChannel channel = event.getChannel();
-            Message message = event.getMessage();
+            Message msg = event.getMessage();
             String rawMsg = event.getMessage().getContentRaw();
             String[] rawMsgArray = event.getMessage().getContentRaw().split(" ");
-            boolean isBot = event.getAuthor().isBot();
+            boolean isBot = member.getUser().isBot();
             String roleName = "";
 
             /*
@@ -79,6 +81,7 @@ public class MessageListener extends ListenerAdapter {
 
                     case "!mute":
                         Role mutedRole = null;
+                        User badUser = msg.getMentionedUsers().get(0);
                         //Checks if MUTED Role exists.
                         if(guild.getRolesByName("MUTED", false).isEmpty()){
                             mutedRole = roles.createMuted(channel, guild);
@@ -92,8 +95,9 @@ public class MessageListener extends ListenerAdapter {
                         }
 
                         // This checks if user has modPerms and if mutedRole exists.
+
                         if(hasModPerms(member) && mutedRole != null){
-                            mod.muteUser(guild, message, mutedRole);
+                            mod.muteUser(guild, badUser, mutedRole);
                             channel.sendMessage("User " + rawMsgArray[1] + " has been muted.").queue();
                         } else
                             channel.sendMessage("You do not have the permissions for this command.").queue();
@@ -101,22 +105,25 @@ public class MessageListener extends ListenerAdapter {
 
                     case "!kick":
                         if(hasModPerms(member)){
-                            mod.kickUser(guild, rawMsgArray);
-                            channel.sendMessage("User " + rawMsgArray[1] + " has been kicked.").queue();
-
-
-                            JDA jda = event.getJDA();
-                            User user = jda.retrieveUserById(rawMsgArray[1]).complete();
-
+                            User user = msg.getMentionedUsers().get(0);
                             if(user != null){
+                                // It needed to be .complete() rather than .queue()
                                 user.openPrivateChannel()
-                                        .flatMap(privateChannel -> privateChannel.sendMessage("hewwo"))
-                                        .queue();
+                                        .flatMap(privchannel -> privchannel.sendMessage("You have been kicked from the " + guild.getName())).complete();
+                                mod.kickUser(guild, user);
+                                channel.sendMessage("User " + user.getName() + " has been kicked.").queue();
+
                             } else{
                                 System.out.println("User is null.");
                             }
 
                         }
+                        break;
+
+                    case "!pm":
+                        User user = msg.getMentionedUsers().get(0);
+                        user.openPrivateChannel()
+                            .flatMap(privchannel -> privchannel.sendMessage("hi")).queue();
                         break;
 
 

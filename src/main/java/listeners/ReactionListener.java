@@ -17,28 +17,25 @@ public class ReactionListener extends ListenerAdapter {
             Guild guild = event.getGuild();
 
             String msgChannel = channel.getId(), userID = event.getUserId();
-            List<Role> mentionedRole = event.retrieveMessage().complete().getMentionedRoles();
-            if(msgChannel.equals("808981438468587540")){ //Gotta find a way to set this
-                guild.addRoleToMember(userID, mentionedRole.get(0)).queue();
-                channel.sendMessage("added to role").queue();
-            }
+            List<Role> mentionedRoles = event.retrieveMessage().complete().getMentionedRoles();
+            if(msgChannel.equals("775566646886531085"))//Gotta find a way to set this
+                guild.addRoleToMember(userID, mentionedRoles.get(0)).queue();
         }
     }
 
     public void onMessageReactionRemove (MessageReactionRemoveEvent event){
-        if(!event.getUser().isBot()){
+        if(!event.getUser().isBot()) {
             MessageChannel channel = event.getChannel();
             Guild guild = event.getGuild();
 
             String msgChannel = channel.getId(), userID = event.getUserId();
             List<Role> mentionedRole = event.retrieveMessage().complete().getMentionedRoles();
 
-            if(msgChannel.equals("808981438468587540")){
+            if (msgChannel.equals("775566646886531085")) //Gotta find a way to set this.
                 guild.removeRoleFromMember(userID, mentionedRole.get(0)).queue();
-                channel.sendMessage("removed from role").queue();
-            }
         }
     }
-
-
 }
+
+
+
