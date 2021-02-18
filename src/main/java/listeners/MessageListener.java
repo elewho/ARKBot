@@ -126,6 +126,17 @@ public class MessageListener extends ListenerAdapter {
                             .flatMap(privchannel -> privchannel.sendMessage("hi")).queue();
                         break;
 
+                    case "!purge":
+                        MessageChannel purgedChannel = msg.getMentionedChannels().get(0);
+                        String msgID = rawMsgArray[2];
+                        MessageHistory.MessageRetrieveAction msgHistory = MessageHistory.getHistoryAfter(purgedChannel, msgID);
+
+                        purgedChannel.purgeMessages();
+                        /*
+                        getmessagechannel to purge
+                        maybe take from date to date
+                         */
+
 
                     default:
                         break;
