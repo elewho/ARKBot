@@ -7,6 +7,7 @@ Roles-
 - Users who unreact to the role will be removed from the role - done 11/02/21
 - Add check if role already exists - rehauled 03/02/21
 - when user joins, wait 3 seconds before assigning VERIFIED role - done 12/02/21
+- Detect emojis in message, assign them as roles to react to (See animal crossing bot)
 
 Moderation
 - Make it so the bot only works in one channel - so two ways to handle. check for perms, or set up bot using commands
